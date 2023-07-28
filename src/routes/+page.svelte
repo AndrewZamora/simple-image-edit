@@ -6,8 +6,48 @@
 	 * @type {HTMLCanvasElement}
 	 */
 	let id;
-	onMount(() => {
-		const canvas = new fabric.Canvas(id, { height: 500, width: 500 });
+	let canvas = null;
+	// let backgroundImage = null;
+	export let height = 500;
+	export let width = 500;
+
+	function addTextbox() {
+		const textbox = new fabric.Textbox('this is a test', {
+			top: 50,
+			left: 10
+		});
+		canvas.add(textbox);
+	}
+
+	function getImage(url) {
+		return new Promise((resolve) => {
+			fabric.Image.fromURL(
+				url,
+				(img) => {
+					resolve(img);
+				},
+				{ crossOrigin: 'anonymous' }
+			);
+		});
+	}
+
+	async function setBackgroundImage(imgUrl) {
+		let backgroundImage = await getImage(imgUrl).catch((err) => console.log('err', err));
+		console.log(backgroundImage)
+		const widthAspectRatio = backgroundImage.height / backgroundImage.width;
+		const canvasHeight = height ? height : width * widthAspectRatio;
+		const canvasWidth = width ? width : height / widthAspectRatio;
+		canvas.setWidth(canvasWidth);
+		canvas.setHeight(canvasHeight);
+		const imgDimensions = {
+			scaleX: canvas.getWidth() / backgroundImage.width,
+			scaleY: canvas.getHeight() / backgroundImage.height
+		};
+		canvas.setBackgroundImage(backgroundImage, canvas.renderAll.bind(canvas), imgDimensions);
+	}
+
+	onMount(async () => {
+		canvas = new fabric.Canvas(id, { height, width });
 		const rect = new fabric.Rect({
 			top: 0,
 			left: 100,
@@ -15,24 +55,19 @@
 			height: 70,
 			fill: 'red'
 		});
-		const textbox = new fabric.Textbox("this is a test", {
-			top: 50,
-			left: 10,
-		})
-		canvas.add(textbox)
 		canvas.add(rect);
 		canvas.on('mouse:over', (event) => {
 			console.log(event);
 		});
+		await setBackgroundImage('https://source.unsplash.com/random');
 	});
-
-	function setBackgroundImage() {}
 </script>
 
 <div class="index">
 	<main class="container">
 		<canvas class="canvas" bind:this={id} width="300" height="300" />
 	</main>
+	<button type="button" on:click={addTextbox}>Add Text</button>
 </div>
 
 <style>
