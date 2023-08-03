@@ -7,9 +7,23 @@
 	 */
 	let id;
 	let canvas = null;
-	// let backgroundImage = null;
+	let backgroundImage = null;
 	export let height = 500;
 	export let width = 500;
+
+	function loadFromJSON(canvas, json) {
+		return new Promise((resolve) => {
+			canvas.loadFromJSON(json, () => {
+				resolve();
+			});
+		});
+	}
+
+	function getBlob(canvas) {
+		return new Promise((resolve) => {
+			canvas.getElement().toBlob((blob) => resolve(blob));
+		});
+	}
 
 	function addTextbox() {
 		const textbox = new fabric.Textbox('this is a test', {
@@ -31,9 +45,35 @@
 		});
 	}
 
+	async function exportImage() {
+		const json = canvas.toJSON();
+		const exportScaleX = canvas.getWidth() / backgroundImage.width;
+		const exportScaleY = canvas.getHeight() / backgroundImage.height;
+		json.objects.forEach((object) => {
+			if (object.type === 'textbox') {
+				object.scaleX = object.scaleX / exportScaleX;
+				object.scaleY = object.scaleY / exportScaleY;
+				object.left = object.left / exportScaleX;
+				object.top = object.top / exportScaleY;
+			}
+		});
+		json.backgroundImage.scaleX = 1;
+		json.backgroundImage.scaleY = 1;
+		canvas.clear();
+		canvas.renderAll();
+		await loadFromJSON(canvas, json);
+		canvas.setWidth(backgroundImage.width);
+		canvas.setHeight(backgroundImage.height);
+		canvas.renderAll();
+		const blob = await getBlob(canvas);
+		const blobUrl = await URL.createObjectURL(blob);
+		console.log({blobUrl})
+		return blobUrl;
+	}
+
 	async function setBackgroundImage(imgUrl) {
-		let backgroundImage = await getImage(imgUrl).catch((err) => console.log('err', err));
-		console.log(backgroundImage)
+		backgroundImage = await getImage(imgUrl).catch((err) => console.log('err', err));
+		console.log(backgroundImage);
 		const widthAspectRatio = backgroundImage.height / backgroundImage.width;
 		const canvasHeight = height ? height : width * widthAspectRatio;
 		const canvasWidth = width ? width : height / widthAspectRatio;
@@ -68,6 +108,7 @@
 		<canvas class="canvas" bind:this={id} width="300" height="300" />
 	</main>
 	<button type="button" on:click={addTextbox}>Add Text</button>
+	<button type="button" on:click={exportImage}>Export Image</button>
 </div>
 
 <style>
