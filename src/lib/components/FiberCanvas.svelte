@@ -3,14 +3,11 @@
 	// @ts-nocheck
 	import { fabric } from 'fabric';
 	import { onMount } from 'svelte';
-	/**
-	 * @type {HTMLCanvasElement}
-	 */
+	export let height = 500;
+	export let width = 500;
 	let id;
 	let canvas = null;
 	let backgroundImage = null;
-	export let height = 500;
-	export let width = 500;
 
 	function loadFromJSON(canvas, json) {
 		return new Promise((resolve) => {
@@ -72,7 +69,7 @@
 		return blobUrl;
 	}
 
-	async function setBackgroundImage(imgUrl) {
+	export async function setBackgroundImage(imgUrl) {
 		backgroundImage = await getImage(imgUrl).catch((err) => console.log('err', err));
 		console.log(backgroundImage);
 		const widthAspectRatio = backgroundImage.height / backgroundImage.width;
@@ -89,18 +86,10 @@
 
 	onMount(async () => {
 		canvas = new fabric.Canvas(id, { height, width });
-		const rect = new fabric.Rect({
-			top: 0,
-			left: 100,
-			width: 60,
-			height: 70,
-			fill: 'red'
-		});
-		canvas.add(rect);
 		canvas.on('mouse:over', (event) => {
 			console.log(event);
 		});
-		await setBackgroundImage('https://source.unsplash.com/random');
+		// await setBackgroundImage('https://source.unsplash.com/random');
 	});
 </script>
 
