@@ -1,5 +1,5 @@
 
-<script>
+<script lang="ts">
 	// @ts-nocheck
 	import { fabric } from 'fabric';
 	import { onMount } from 'svelte';

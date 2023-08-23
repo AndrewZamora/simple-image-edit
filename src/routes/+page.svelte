@@ -11,11 +11,11 @@
 		const blobUrl = await canvas.exportImage();
 		download(blobUrl)
 	}
-	function download(blobUrl) {
+	function download(blobUrl: string) {
 		const anchor = document.createElement('a');
 		anchor.download = 'test.jpeg';
 		anchor.href = blobUrl;
-		anchor.click()
+		anchor.click();
 	}
 </script>
 
