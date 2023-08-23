@@ -43,7 +43,7 @@
 		});
 	}
 
-	async function exportImage() {
+	export async function exportImage() {
 		const json = canvas.toJSON();
 		const exportScaleX = canvas.getWidth() / backgroundImage.width;
 		const exportScaleY = canvas.getHeight() / backgroundImage.height;
@@ -65,7 +65,6 @@
 		canvas.renderAll();
 		const blob = await getBlob(canvas);
 		const blobUrl = await URL.createObjectURL(blob);
-		console.log({blobUrl})
 		return blobUrl;
 	}
 
@@ -89,16 +88,14 @@
 		canvas.on('mouse:over', (event) => {
 			console.log(event);
 		});
-		// await setBackgroundImage('https://source.unsplash.com/random');
 	});
 </script>
 
 <div class="index">
 	<main class="container">
-		<canvas class="canvas" bind:this={id} width="300" height="300" />
+		<canvas class="canvas" bind:this={id} width={width} height={height} />
 	</main>
 	<button type="button" on:click={addTextbox}>Add Text</button>
-	<button type="button" on:click={exportImage}>Export Image</button>
 </div>
 
 <style>
