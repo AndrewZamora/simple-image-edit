@@ -17,12 +17,16 @@
 		anchor.href = blobUrl;
 		anchor.click();
 	}
+	function addImage(event: Event) {
+		canvas.addImage(event);
+	}
 </script>
 
 <div class="index">
 	<div class="container">
 		<FiberCanvas bind:this={canvas} width={600} height={600} />
 		<button on:click={exportCanvas}>Export</button>
+		<input type="file" on:change={(event)=>addImage(event)} name="add-image" id="add-image">
 	</div>
 </div>
 

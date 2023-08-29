@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	// @ts-nocheck
 	import { fabric } from 'fabric';
@@ -29,6 +28,25 @@
 			left: 10
 		});
 		canvas.add(textbox);
+	}
+
+	export function addImage() {
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			let image = new Image();
+			image.src = event.target.result;
+			image.onload = () => {
+				let canvasImage = new fabric.Image(image);
+				canvasImage.set({
+					top: 50,
+					left: 10
+				});
+				canvasImage.scaleToWidth(300);
+				canvas.add(canvasImage).setActiveObject(canvasImage).renderAll();
+			};
+		};
+		const [file] = event.target.files;
+		reader.readAsDataURL(file);
 	}
 
 	function getImage(url) {
@@ -93,7 +111,7 @@
 
 <div class="index">
 	<main class="container">
-		<canvas class="canvas" bind:this={id} width={width} height={height} />
+		<canvas class="canvas" bind:this={id} {width} {height} />
 	</main>
 	<button type="button" on:click={addTextbox}>Add Text</button>
 </div>
