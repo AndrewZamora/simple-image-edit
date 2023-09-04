@@ -30,7 +30,7 @@
 		canvas.add(textbox);
 	}
 
-	export function addImage() {
+	export function addImage(event) {
 		const reader = new FileReader();
 		reader.onload = (event) => {
 			let image = new Image();
