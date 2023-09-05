@@ -30,23 +30,14 @@
 		canvas.add(textbox);
 	}
 
-	export function addImage(event) {
-		const reader = new FileReader();
-		reader.onload = (event) => {
-			let image = new Image();
-			image.src = event.target.result;
-			image.onload = () => {
-				let canvasImage = new fabric.Image(image);
-				canvasImage.set({
-					top: 50,
-					left: 10
-				});
-				canvasImage.scaleToWidth(300);
-				canvas.add(canvasImage).setActiveObject(canvasImage).renderAll();
-			};
-		};
-		const [file] = event.target.files;
-		reader.readAsDataURL(file);
+	export function addImage(image: HTMLImageElement) {
+		let canvasImage = new fabric.Image(image);
+		canvasImage.set({
+			top: 50,
+			left: 10
+		});
+		canvasImage.scaleToWidth(300);
+		canvas.add(canvasImage).setActiveObject(canvasImage).renderAll();
 	}
 
 	function getImage(url) {

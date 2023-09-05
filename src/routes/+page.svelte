@@ -19,14 +19,14 @@
 		anchor.href = blobUrl;
 		anchor.click();
 	}
-	function addImage(event: Event) {
-		canvas.addImage(event);
+	function addImage(image: HTMLImageElement) {
+		canvas.addImage(image);
 	}
 	function handleImageFiles(event: Event) {
 		const files = (<HTMLInputElement>event.target).files;
 		if (files?.length) {
 			Array.from(files).forEach((file) => {
-				uploadImageFiles(file)
+				uploadImageFiles(file);
 			});
 		}
 	}
@@ -60,11 +60,13 @@
 		/>
 	</div>
 	{#if images.length}
-	<div>
-		{#each images as image }
-			<img src={image.currentSrc} alt="file previews">
-		{/each}
-	</div>
+		<div class="image-gallery">
+			{#each images as image}
+				<button type="button" on:click={() => addImage(image)}>
+					<img src={image.currentSrc} alt="file preview" />
+				</button>
+			{/each}
+		</div>
 	{/if}
 </div>
 
@@ -76,8 +78,8 @@
 		align-items: center;
 		outline: orangered dashed 1px;
 	}
-	img {
-		height: 100%;
-		width: auto;
+	.image-gallery img {
+		height: auto;
+		width: 300px;
 	}
 </style>
