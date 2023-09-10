@@ -22,6 +22,9 @@
 	function addImage(image: HTMLImageElement) {
 		canvas.addImage(image);
 	}
+	function addTextbox(text: string, { top, left }: { top: number; left: number }) {
+		canvas.addTextbox(text, { top, left });
+	}
 	function handleImageFiles(event: Event) {
 		const files = (<HTMLInputElement>event.target).files;
 		if (files?.length) {
@@ -51,6 +54,9 @@
 	<div class="container">
 		<FiberCanvas bind:this={canvas} width={600} height={600} />
 		<button on:click={exportCanvas}>Export</button>
+		<button type="button" on:click={()=>addTextbox('click to edit', { top: 50, left: 50 })}
+			>Add Text</button
+		>
 		<input
 			type="file"
 			on:change={(event) => handleImageFiles(event)}

@@ -22,10 +22,10 @@
 		});
 	}
 
-	function addTextbox() {
-		const textbox = new fabric.Textbox('this is a test', {
-			top: 50,
-			left: 10
+	export function addTextbox(text: string, { top, left }: { top: number; left: number }) {
+		const textbox = new fabric.Textbox(text, {
+			top,
+			left
 		});
 		canvas.add(textbox);
 	}
@@ -104,7 +104,6 @@
 	<main class="container">
 		<canvas class="canvas" bind:this={id} {width} {height} />
 	</main>
-	<button type="button" on:click={addTextbox}>Add Text</button>
 </div>
 
 <style>
