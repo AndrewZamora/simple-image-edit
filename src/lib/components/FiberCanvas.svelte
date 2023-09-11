@@ -4,6 +4,8 @@
 	import { onMount } from 'svelte';
 	export let height = 500;
 	export let width = 500;
+	export let backgroundColor = '';
+	export let allowZoom = false;
 	let id;
 	let canvas = null;
 	let backgroundImage = null;
@@ -92,11 +94,25 @@
 		canvas.setBackgroundImage(backgroundImage, canvas.renderAll.bind(canvas), imgDimensions);
 	}
 
+	function handleMouseWheel(opt) {
+		if (allowZoom) {
+			let delta = opt.e.deltaY;
+			let zoom = canvas.getZoom();
+			zoom *= 0.999 ** delta;
+			if (zoom > 20) zoom = 20;
+			if (zoom < 0.01) zoom = 0.01;
+			canvas.setZoom(zoom);
+			opt.e.preventDefault();
+			opt.e.stopPropagation();
+		}
+	}
+
 	onMount(async () => {
-		canvas = new fabric.Canvas(id, { height, width });
+		canvas = new fabric.Canvas(id, { height, width, backgroundColor });
 		canvas.on('mouse:over', (event) => {
 			console.log(event);
 		});
+		canvas.on('mouse:wheel', (opt) => handleMouseWheel(opt));
 	});
 </script>
 

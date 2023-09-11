@@ -2,6 +2,7 @@
 	import FiberCanvas from '$lib/components/FiberCanvas.svelte';
 	import { SvelteComponent, onMount } from 'svelte';
 	let canvas: SvelteComponent;
+	let allowZoom = false;
 	onMount(() => {
 		if (canvas) {
 			canvas.setBackgroundImage('https://source.unsplash.com/random');
@@ -52,11 +53,12 @@
 
 <div class="index">
 	<div class="container">
-		<FiberCanvas bind:this={canvas} width={600} height={600} />
+		<FiberCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" allowZoom={allowZoom} />
 		<button on:click={exportCanvas}>Export</button>
 		<button type="button" on:click={()=>addTextbox('click to edit', { top: 50, left: 50 })}
 			>Add Text</button
 		>
+		<button on:click={()=> allowZoom = true} type="button">zoom</button>
 		<input
 			type="file"
 			on:change={(event) => handleImageFiles(event)}
