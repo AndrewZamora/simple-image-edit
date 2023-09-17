@@ -34,6 +34,8 @@
 	export async function crop() {
 		const dataUrl = canvas.toDataURL();
 		await setBackgroundImage(dataUrl);
+		// https://stackoverflow.com/questions/28863678/fabricjs-canvas-reset-after-zooming
+		canvas.setZoom(1);
 	}
 
 	export function addImage(image: HTMLImageElement) {
