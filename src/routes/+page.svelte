@@ -49,16 +49,21 @@
 		};
 		reader.readAsDataURL(file);
 	}
+	function handleCrop() {
+		canvas.crop();
+		allowZoom = false;
+	}
 </script>
 
 <div class="index">
 	<div class="container">
-		<FiberCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" allowZoom={allowZoom} />
+		<FiberCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} />
 		<button on:click={exportCanvas}>Export</button>
-		<button type="button" on:click={()=>addTextbox('click to edit', { top: 50, left: 50 })}
+		<button type="button" on:click={() => addTextbox('click to edit', { top: 50, left: 50 })}
 			>Add Text</button
 		>
-		<button on:click={()=> allowZoom = true} type="button">zoom</button>
+		<button on:click={() => (allowZoom = true)} type="button">zoom</button>
+		<button on:click={handleCrop} type="button">crop</button>
 		<input
 			type="file"
 			on:change={(event) => handleImageFiles(event)}

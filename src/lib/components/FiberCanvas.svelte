@@ -31,6 +31,10 @@
 		});
 		canvas.add(textbox);
 	}
+	export async function crop() {
+		const dataUrl = canvas.toDataURL();
+		await setBackgroundImage(dataUrl);
+	}
 
 	export function addImage(image: HTMLImageElement) {
 		let canvasImage = new fabric.Image(image);
