@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FiberCanvas from '$lib/components/FiberCanvas.svelte';
+	import FabricCanvas from '$lib/components/FabricCanvas.svelte';
 	import { SvelteComponent, onMount } from 'svelte';
 	let canvas: SvelteComponent;
 	let allowZoom = false;
@@ -57,7 +57,7 @@
 
 <div class="index">
 	<div class="container">
-		<FiberCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} />
+		<FabricCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} />
 		<button on:click={exportCanvas}>Export</button>
 		<button type="button" on:click={() => addTextbox('click to edit', { top: 50, left: 50 })}
 			>Add Text</button
