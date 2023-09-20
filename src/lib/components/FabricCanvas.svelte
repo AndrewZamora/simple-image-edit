@@ -100,6 +100,10 @@
 		canvas.setBackgroundImage(backgroundImage, canvas.renderAll.bind(canvas), imgDimensions);
 	}
 
+	export function reset() {
+		canvas.dispose()
+	}
+
 	function handleMouseWheel(opt) {
 		if (allowZoom) {
 			let delta = opt.e.deltaY;

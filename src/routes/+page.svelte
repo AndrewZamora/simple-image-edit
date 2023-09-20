@@ -53,6 +53,9 @@
 		canvas.crop();
 		allowZoom = false;
 	}
+	function resetCanvas() {
+		canvas.reset();
+	}
 </script>
 
 <div class="index">
@@ -64,6 +67,7 @@
 		>
 		<button on:click={() => (allowZoom = true)} type="button">zoom</button>
 		<button on:click={handleCrop} type="button">crop</button>
+		<button on:click={resetCanvas} type="button">reset</button>
 		<input
 			type="file"
 			on:change={(event) => handleImageFiles(event)}
