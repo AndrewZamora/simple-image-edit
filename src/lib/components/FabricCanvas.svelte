@@ -39,6 +39,7 @@
 	}
 
 	export function addImage(image: HTMLImageElement) {
+		console.log("ADD IMAGE")
 		let canvasImage = new fabric.Image(image);
 		canvasImage.set({
 			top: 50,
