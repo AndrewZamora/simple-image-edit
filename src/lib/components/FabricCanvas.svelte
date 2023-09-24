@@ -101,7 +101,7 @@
 	}
 
 	export function reset() {
-		canvas.dispose()
+		canvas.dispose();
 	}
 
 	function handleMouseWheel(opt) {
@@ -109,8 +109,13 @@
 			let delta = opt.e.deltaY;
 			let zoom = canvas.getZoom();
 			zoom *= 0.999 ** delta;
-			if (zoom > 20) zoom = 20;
-			if (zoom < 0.01) zoom = 0.01;
+			if (zoom > 20) {
+				zoom = 20;
+			}
+			if (zoom < 0.01) {
+				zoom = 0.01;
+			}
+			canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
 			canvas.setZoom(zoom);
 			opt.e.preventDefault();
 			opt.e.stopPropagation();
