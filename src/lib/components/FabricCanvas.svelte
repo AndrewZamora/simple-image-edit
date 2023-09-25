@@ -1,7 +1,8 @@
 <script lang="ts">
 	// @ts-nocheck
 	import { fabric } from 'fabric';
-	import { onMount } from 'svelte';
+	import { onMount, createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 	export let height = 500;
 	export let width = 500;
 	export let backgroundColor = '';
@@ -39,7 +40,7 @@
 	}
 
 	export function addImage(image: HTMLImageElement) {
-		console.log("ADD IMAGE")
+		console.log('ADD IMAGE');
 		let canvasImage = new fabric.Image(image);
 		canvasImage.set({
 			top: 50,
@@ -122,13 +123,18 @@
 			opt.e.stopPropagation();
 		}
 	}
+	function handleSelection(selection) {
+		dispatch('select', selection);
+	}
 
 	onMount(async () => {
 		canvas = new fabric.Canvas(id, { height, width, backgroundColor });
-		canvas.on('mouse:over', (event) => {
-			console.log(event);
-		});
+		// canvas.on('mouse:over', (event) => {
+		// 	console.log(event);
+		// })
 		canvas.on('mouse:wheel', (opt) => handleMouseWheel(opt));
+		canvas.on('selection:updated', (obj) => handleSelection(obj));
+		canvas.on('selection:created', (obj) => handleSelection(obj));
 	});
 </script>
 

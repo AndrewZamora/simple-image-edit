@@ -5,7 +5,8 @@
 	let savedImages: HTMLImageElement[] = [];
 	let allowZoom = false;
 	let showCanvas = false;
-  let showFileInput = true;
+	let showFileInput = true;
+	let activeObject = null;
 	$: images = savedImages;
 
 	function addImage(image: HTMLImageElement) {
@@ -18,6 +19,7 @@
 				uploadImageFile(file);
 			});
 		}
+		showFileInput = false;
 	}
 	function uploadImageFile(file: File) {
 		showCanvas = true;
@@ -36,21 +38,28 @@
 		};
 		reader.readAsDataURL(file);
 	}
+	function handleCrop() {
+		console.log({activeObject})
+	}
+	function onSelect({detail}) {
+		activeObject = detail;
+	}
 	onMount(() => {});
 </script>
 
 <main class="container">
-  {#if showFileInput}
-	<input
-		type="file"
-		on:change={(event) => handleImageFiles(event)}
-		name="add-image"
-		id="add-image"
-		multiple
-	/>
-  {/if}
+	{#if showFileInput}
+		<input
+			type="file"
+			on:change={(event) => handleImageFiles(event)}
+			name="add-image"
+			id="add-image"
+			multiple
+		/>
+	{/if}
 	{#if showCanvas}
-		<FabricCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} />
+		<FabricCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} on:select={onSelect} />
+		<button on:click={handleCrop} type="button">crop</button>
 	{/if}
 </main>
 
