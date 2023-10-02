@@ -106,6 +106,11 @@
 		canvas.dispose();
 	}
 
+	export function add(activeObject) {
+		// canvas.add(activeObject)
+		canvas.setBackgroundImage(activeObject, canvas.renderAll.bind(canvas))
+	}
+
 	function handleMouseWheel(opt) {
 		if (allowZoom) {
 			let delta = opt.e.deltaY;
@@ -123,8 +128,8 @@
 			opt.e.stopPropagation();
 		}
 	}
-	function handleSelection(selection) {
-		dispatch('select', selection);
+	function handleSelection() {
+		dispatch('select', canvas.getActiveObject());
 	}
 
 	onMount(async () => {
@@ -133,8 +138,8 @@
 		// 	console.log(event);
 		// })
 		canvas.on('mouse:wheel', (opt) => handleMouseWheel(opt));
-		canvas.on('selection:updated', (obj) => handleSelection(obj));
-		canvas.on('selection:created', (obj) => handleSelection(obj));
+		canvas.on('selection:updated', (obj) => handleSelection());
+		canvas.on('selection:created', (obj) => handleSelection());
 	});
 </script>
 

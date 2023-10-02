@@ -2,9 +2,11 @@
 	import FabricCanvas from '$lib/components/FabricCanvas.svelte';
 	import { SvelteComponent, onMount } from 'svelte';
 	let canvas: SvelteComponent;
+	let cropCanvas: SvelteComponent;
 	let savedImages: HTMLImageElement[] = [];
 	let allowZoom = false;
 	let showCanvas = false;
+	let showCrop = false;
 	let showFileInput = true;
 	let activeObject = null;
 	$: images = savedImages;
@@ -29,6 +31,7 @@
 			const result = (<FileReader>event.target).result;
 			if (result) {
 				image.src = result.toString();
+				image.id = `${file.name}${new Date().getTime()}`;
 				image.onload = () => {
 					savedImages.push(image);
 					addImage(image);
@@ -39,9 +42,16 @@
 		reader.readAsDataURL(file);
 	}
 	function handleCrop() {
-		console.log({activeObject})
+		const imageMatch = savedImages.find((img) => img.id === activeObject['_element'].id);
+		showCanvas = false;
+		showCrop = true;
+		setTimeout(() => {
+			if (imageMatch && imageMatch.src) {
+				cropCanvas.setBackgroundImage(imageMatch.src);
+			}
+		}, 0);
 	}
-	function onSelect({detail}) {
+	function onSelect({ detail }) {
 		activeObject = detail;
 	}
 	onMount(() => {});
@@ -58,8 +68,24 @@
 		/>
 	{/if}
 	{#if showCanvas}
-		<FabricCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} on:select={onSelect} />
+		<FabricCanvas
+			bind:this={canvas}
+			width={600}
+			height={600}
+			backgroundColor="gray"
+			{allowZoom}
+			on:select={onSelect}
+		/>
 		<button on:click={handleCrop} type="button">crop</button>
+	{/if}
+	{#if showCrop}
+		<FabricCanvas
+			bind:this={cropCanvas}
+			width={600}
+			height={600}
+			backgroundColor="gray"
+			allowZoom={true}
+		/>
 	{/if}
 </main>
 
@@ -69,9 +95,5 @@
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
-	}
-	.hidden {
-		display: hidden;
-		background: green;
 	}
 </style>
