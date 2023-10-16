@@ -54,6 +54,10 @@
 	function onSelect({ detail }) {
 		activeObject = detail;
 	}
+	function finish() {
+		showCanvas = true;
+		showCrop = false;
+	}
 	onMount(() => {});
 </script>
 
@@ -67,7 +71,7 @@
 			multiple
 		/>
 	{/if}
-	{#if showCanvas}
+	<div class:hidden={!showCanvas}>
 		<FabricCanvas
 			bind:this={canvas}
 			width={600}
@@ -77,7 +81,7 @@
 			on:select={onSelect}
 		/>
 		<button on:click={handleCrop} type="button">crop</button>
-	{/if}
+	</div>
 	{#if showCrop}
 		<FabricCanvas
 			bind:this={cropCanvas}
@@ -86,6 +90,7 @@
 			backgroundColor="gray"
 			allowZoom={true}
 		/>
+		<button on:click={finish} type="button">finish</button>
 	{/if}
 </main>
 
@@ -95,5 +100,8 @@
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
+	}
+	.hidden {
+		display: none;
 	}
 </style>
