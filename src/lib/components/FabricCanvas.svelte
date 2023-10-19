@@ -43,7 +43,7 @@
 		console.log('ADD IMAGE');
 		let canvasImage = new fabric.Image(image);
 		canvasImage.set({
-			top: 50,
+			top: 0,
 			left: 10
 		});
 		canvasImage.scaleToWidth(300);
@@ -60,6 +60,10 @@
 				{ crossOrigin: 'anonymous' }
 			);
 		});
+	}
+
+	export async function getCropped() {
+		return await getBlob(canvas);
 	}
 
 	export async function exportImage() {

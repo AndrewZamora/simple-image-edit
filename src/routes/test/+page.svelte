@@ -54,7 +54,15 @@
 	function onSelect({ detail }) {
 		activeObject = detail;
 	}
-	function finish() {
+	async function extractCroppedImage() {
+		const blob = await cropCanvas.getCropped();
+		const imgUrl = URL.createObjectURL(blob);
+		const image = new Image();
+		image.src = imgUrl;
+		console.log(image);
+		image.onload = () => {
+			canvas.addImage(image);
+		};
 		showCanvas = true;
 		showCrop = false;
 	}
@@ -82,7 +90,7 @@
 		/>
 		<button on:click={handleCrop} type="button">crop</button>
 	</div>
-	{#if showCrop}
+	<div class:hidden={!showCrop}>
 		<FabricCanvas
 			bind:this={cropCanvas}
 			width={600}
@@ -90,8 +98,8 @@
 			backgroundColor="gray"
 			allowZoom={true}
 		/>
-		<button on:click={finish} type="button">finish</button>
-	{/if}
+		<button on:click={extractCroppedImage} type="button">finish</button>
+	</div>
 </main>
 
 <style>
