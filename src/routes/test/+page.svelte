@@ -77,6 +77,7 @@
 			savedImages.push(image);
 			canvas.addImage(image);
 		};
+		cropCanvas.clearBackgroundImage();
 		showCanvas = true;
 		showCrop = false;
 	}

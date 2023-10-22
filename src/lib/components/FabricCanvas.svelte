@@ -106,6 +106,13 @@
 		canvas.setBackgroundImage(backgroundImage, canvas.renderAll.bind(canvas), imgDimensions);
 	}
 
+	export function clearBackgroundImage() {
+		canvas.setBackgroundImage('', canvas.renderAll.bind(canvas));
+		canvas.setZoom(1);
+		// https://stackoverflow.com/questions/28863678/fabricjs-canvas-reset-after-zooming
+		canvas.setViewportTransform([1,0,0,1,0,0])
+	}
+
 	export function reset() {
 		canvas.dispose();
 	}
