@@ -110,6 +110,10 @@
 		canvas.dispose();
 	}
 
+	export function remove(activeObject) {
+		canvas.remove(activeObject);
+	}
+
 	export function add(activeObject) {
 		// canvas.add(activeObject)
 		canvas.setBackgroundImage(activeObject, canvas.renderAll.bind(canvas))

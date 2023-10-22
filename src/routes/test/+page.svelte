@@ -14,6 +14,7 @@
 	function addImage(image: HTMLImageElement) {
 		canvas.addImage(image);
 	}
+
 	function handleImageFiles(event: Event) {
 		const files = (<HTMLInputElement>event.target).files;
 		if (files?.length) {
@@ -23,6 +24,7 @@
 		}
 		showFileInput = false;
 	}
+
 	function uploadImageFile(file: File) {
 		showCanvas = true;
 		const reader = new FileReader();
@@ -41,6 +43,7 @@
 		};
 		reader.readAsDataURL(file);
 	}
+
 	function handleCrop() {
 		const imageMatch = savedImages.find((img) => img.id === activeObject['_element'].id);
 		showCanvas = false;
@@ -51,16 +54,27 @@
 			}
 		}, 0);
 	}
+
 	function onSelect({ detail }) {
 		activeObject = detail;
 	}
+
+	function deleteCanvasObject(id: string) {
+		const index = savedImages.findIndex((i) => i.id === id);
+		savedImages.splice(index, 1);
+		canvas.remove(activeObject);
+	}
+
 	async function extractCroppedImage() {
+		const id = activeObject['_element'].id;
+		deleteCanvasObject(id);
 		const blob = await cropCanvas.getCropped();
 		const imgUrl = URL.createObjectURL(blob);
 		const image = new Image();
 		image.src = imgUrl;
-		console.log(image);
+		image.id = `${id}-cropped`;
 		image.onload = () => {
+			savedImages.push(image);
 			canvas.addImage(image);
 		};
 		showCanvas = true;
