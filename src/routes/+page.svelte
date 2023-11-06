@@ -2,72 +2,94 @@
 	import FabricCanvas from '$lib/components/FabricCanvas.svelte';
 	import { SvelteComponent, onMount } from 'svelte';
 	let canvas: SvelteComponent;
-	let allowZoom = false;
-	onMount(() => {
-		if (canvas) {
-			canvas.setBackgroundImage('https://source.unsplash.com/random');
-		}
-	});
+	let cropCanvas: SvelteComponent;
 	let savedImages: HTMLImageElement[] = [];
+	let allowZoom = false;
+	let showCanvas = false;
+	let showCrop = false;
+	let showFileInput = true;
+	let activeObject = null;
 	$: images = savedImages;
-	async function exportCanvas() {
-		const blobUrl = await canvas.exportImage();
-		download(blobUrl);
-	}
-	function download(blobUrl: string) {
-		const anchor = document.createElement('a');
-		anchor.download = 'test.jpeg';
-		anchor.href = blobUrl;
-		anchor.click();
-	}
+
 	function addImage(image: HTMLImageElement) {
 		canvas.addImage(image);
 	}
-	function addTextbox(text: string, { top, left }: { top: number; left: number }) {
-		canvas.addTextbox(text, { top, left });
-	}
+
 	function handleImageFiles(event: Event) {
 		const files = (<HTMLInputElement>event.target).files;
 		if (files?.length) {
 			Array.from(files).forEach((file) => {
-				uploadImageFiles(file);
+				uploadImageFile(file);
 			});
 		}
+		showFileInput = false;
 	}
-	function uploadImageFiles(file: File) {
+
+	function uploadImageFile(file: File) {
+		showCanvas = true;
 		const reader = new FileReader();
 		reader.onload = (event: Event) => {
 			let image = new Image();
 			const result = (<FileReader>event.target).result;
 			if (result) {
 				image.src = result.toString();
+				image.id = `${file.name}${new Date().getTime()}`;
 				image.onload = () => {
 					savedImages.push(image);
+					addImage(image);
 					savedImages = savedImages;
 				};
 			}
 		};
 		reader.readAsDataURL(file);
 	}
+
 	function handleCrop() {
-		canvas.crop();
-		allowZoom = false;
+		const imageMatch = savedImages.find((img) => img.id === activeObject['_element'].id);
+		showCanvas = false;
+		showCrop = true;
+		setTimeout(() => {
+			if (imageMatch && imageMatch.src) {
+				cropCanvas.setBackgroundImage(imageMatch.src);
+			}
+		}, 0);
 	}
-	function resetCanvas() {
-		canvas.reset();
+
+	function onSelect({ detail }) {
+		activeObject = detail;
 	}
+
+	function deleteCanvasObject(id: string) {
+		const index = savedImages.findIndex((i) => i.id === id);
+		savedImages.splice(index, 1);
+		canvas.remove(activeObject);
+	}
+
+	async function extractCroppedImage() {
+		const id = activeObject['_element'].id;
+		deleteCanvasObject(id);
+		const blob = await cropCanvas.getCropped();
+		const imgUrl = URL.createObjectURL(blob);
+		const image = new Image();
+		image.src = imgUrl;
+		image.id = `${id}-cropped`;
+		image.onload = () => {
+			savedImages.push(image);
+			canvas.addImage(image);
+		};
+		cropCanvas.clearBackgroundImage();
+		showCanvas = true;
+		showCrop = false;
+	}
+
+	function handleResetZoom() {
+		cropCanvas.resetZoom();
+	}
+	onMount(() => {});
 </script>
 
-<div class="index">
-	<div class="container">
-		<FabricCanvas bind:this={canvas} width={600} height={600} backgroundColor="gray" {allowZoom} />
-		<button on:click={exportCanvas}>Export</button>
-		<button type="button" on:click={() => addTextbox('click to edit', { top: 50, left: 50 })}
-			>Add Text</button
-		>
-		<button on:click={() => (allowZoom = true)} type="button">zoom</button>
-		<button on:click={handleCrop} type="button">crop</button>
-		<button on:click={resetCanvas} type="button">reset</button>
+<main class="container">
+	{#if showFileInput}
 		<input
 			type="file"
 			on:change={(event) => handleImageFiles(event)}
@@ -75,28 +97,39 @@
 			id="add-image"
 			multiple
 		/>
-	</div>
-	{#if images.length}
-		<div class="image-gallery">
-			{#each images as image}
-				<button type="button" on:click={() => addImage(image)}>
-					<img src={image.currentSrc} alt="file preview" />
-				</button>
-			{/each}
-		</div>
 	{/if}
-</div>
+	<div class:hidden={!showCanvas}>
+		<FabricCanvas
+			bind:this={canvas}
+			width={600}
+			height={600}
+			backgroundColor="gray"
+			{allowZoom}
+			on:select={onSelect}
+		/>
+		<button on:click={handleCrop} type="button">crop</button>
+	</div>
+	<div class:hidden={!showCrop}>
+		<FabricCanvas
+			bind:this={cropCanvas}
+			width={600}
+			height={600}
+			backgroundColor="gray"
+			allowZoom={true}
+		/>
+		<button on:click={extractCroppedImage} type="button">finish</button>
+		<button on:click={handleResetZoom} type="button">reset</button>
+	</div>
+</main>
 
 <style>
 	.container {
 		display: flex;
-		width: 100%;
 		justify-content: center;
 		align-items: center;
-		outline: orangered dashed 1px;
+		height: 100vh;
 	}
-	.image-gallery img {
-		height: auto;
-		width: 300px;
+	.hidden {
+		display: none;
 	}
 </style>
