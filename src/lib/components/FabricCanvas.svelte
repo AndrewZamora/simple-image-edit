@@ -109,12 +109,16 @@
 	export function clearBackgroundImage() {
 		canvas.setBackgroundImage('', canvas.renderAll.bind(canvas));
 		canvas.setZoom(1);
-		// https://stackoverflow.com/questions/28863678/fabricjs-canvas-reset-after-zooming
-		canvas.setViewportTransform([1,0,0,1,0,0])
+		resetZoom();
 	}
 
 	export function reset() {
 		canvas.dispose();
+	}
+
+	export function resetZoom() {
+		// https://stackoverflow.com/questions/28863678/fabricjs-canvas-reset-after-zooming
+		canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 	}
 
 	export function remove(activeObject) {
@@ -123,7 +127,7 @@
 
 	export function add(activeObject) {
 		// canvas.add(activeObject)
-		canvas.setBackgroundImage(activeObject, canvas.renderAll.bind(canvas))
+		canvas.setBackgroundImage(activeObject, canvas.renderAll.bind(canvas));
 	}
 
 	function handleMouseWheel(opt) {

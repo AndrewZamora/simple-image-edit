@@ -81,6 +81,10 @@
 		showCanvas = true;
 		showCrop = false;
 	}
+
+	function handleResetZoom() {
+		cropCanvas.resetZoom();
+	}
 	onMount(() => {});
 </script>
 
@@ -114,6 +118,7 @@
 			allowZoom={true}
 		/>
 		<button on:click={extractCroppedImage} type="button">finish</button>
+		<button on:click={handleResetZoom} type="button">reset</button>
 	</div>
 </main>
 
