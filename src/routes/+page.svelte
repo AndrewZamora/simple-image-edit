@@ -85,6 +85,15 @@
 	function handleResetZoom() {
 		cropCanvas.resetZoom();
 	}
+
+	async function handleExport() {
+		const blobUrl = await canvas.exportImage();
+		const anchor = document.createElement('a');
+		anchor.download = 'test.jpeg';
+		anchor.href = blobUrl;
+		anchor.click();
+	}
+
 	onMount(() => {});
 </script>
 
@@ -108,6 +117,7 @@
 			on:select={onSelect}
 		/>
 		<button on:click={handleCrop} type="button">crop</button>
+		<button on:click={handleExport} type="button">export</button>
 	</div>
 	<div class:hidden={!showCrop}>
 		<FabricCanvas

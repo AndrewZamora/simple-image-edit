@@ -68,23 +68,25 @@
 
 	export async function exportImage() {
 		const json = canvas.toJSON();
-		const exportScaleX = canvas.getWidth() / backgroundImage.width;
-		const exportScaleY = canvas.getHeight() / backgroundImage.height;
-		json.objects.forEach((object) => {
-			if (object.type === 'textbox') {
-				object.scaleX = object.scaleX / exportScaleX;
-				object.scaleY = object.scaleY / exportScaleY;
-				object.left = object.left / exportScaleX;
-				object.top = object.top / exportScaleY;
-			}
-		});
-		json.backgroundImage.scaleX = 1;
-		json.backgroundImage.scaleY = 1;
+		if (backgroundImage) {
+			const exportScaleX = canvas.getWidth() / backgroundImage.width;
+			const exportScaleY = canvas.getHeight() / backgroundImage.height;
+			json.objects.forEach((object) => {
+				if (object.type === 'textbox') {
+					object.scaleX = object.scaleX / exportScaleX;
+					object.scaleY = object.scaleY / exportScaleY;
+					object.left = object.left / exportScaleX;
+					object.top = object.top / exportScaleY;
+				}
+			});
+			json.backgroundImage.scaleX = 1;
+			json.backgroundImage.scaleY = 1;
+		}
 		canvas.clear();
 		canvas.renderAll();
 		await loadFromJSON(canvas, json);
-		canvas.setWidth(backgroundImage.width);
-		canvas.setHeight(backgroundImage.height);
+		canvas.setWidth(backgroundImage ? backgroundImage.width : width );
+		canvas.setHeight(backgroundImage ? backgroundImage.height : height);
 		canvas.renderAll();
 		const blob = await getBlob(canvas);
 		const blobUrl = await URL.createObjectURL(blob);
